@@ -5,10 +5,12 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../external/json.hpp"   // 使用 nlohmann::json
+
 struct ActivityRecord {
     std::string date;      // "YYYY-MM-DD"
-    int minutes;           // 活動時間
-    std::string intensity; // "light", "moderate", "vigorous" ...
+    int         minutes;   // 活動時間（分鐘）
+    std::string intensity; // "low" / "moderate" / "high"
 };
 
 class ActivityManager {
@@ -27,11 +29,16 @@ public:
                       int newMinutes,
                       const std::string& newIntensity);
 
-    bool deleteRecord(const std::string& userName, std::size_t index);
+    bool deleteRecord(const std::string& userName,
+                      std::size_t index);
 
     std::vector<ActivityRecord> getAll(const std::string& userName) const;
 
     void sortByDuration(const std::string& userName);
+
+    // JSON 匯出 / 匯入
+    nlohmann::json toJson() const;
+    void fromJson(const nlohmann::json& j);
 };
 
 #endif

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <cstddef>
 
 #include "../user/UserBackend.hpp"
 #include "../records/Water.hpp"
@@ -12,17 +13,24 @@
 
 class HealthBackend {
 private:
-    UserBackend userBackend;
-    WaterManager waterManager;
-    SleepManager sleepManager;
-    ActivityManager activityManager;
+    UserBackend         userBackend;
+    WaterManager        waterManager;
+    SleepManager        sleepManager;
+    ActivityManager     activityManager;
     OtherCategoryManager otherManager;
 
     // 從 token 找 userName，失敗回傳空字串
     std::string getUserNameFromToken(const std::string& token) const;
 
+    // 檔案存取（啟動讀、每次修改寫）
+    void loadAll();
+    void saveAll() const;
+
 public:
-    // 使用者相關
+    // 建構子：啟動時自動從 data/storage.json 載入
+    HealthBackend();
+
+    // ===== 使用者相關 =====
     bool registerUser(const std::string& name,
                       int age,
                       double weightKg,
@@ -38,9 +46,11 @@ public:
                     double newHeightM,
                     const std::string& newPassword);
 
+    bool deleteUser(const std::string& token);
+
     double getBMI(const std::string& token) const;
 
-    // 水紀錄
+    // ===== 水紀錄 =====
     bool addWater(const std::string& token,
                   const std::string& date,
                   double amountMl);
@@ -50,7 +60,8 @@ public:
                      const std::string& newDate,
                      double newAmountMl);
 
-    bool deleteWater(const std::string& token, std::size_t index);
+    bool deleteWater(const std::string& token,
+                     std::size_t index);
 
     std::vector<WaterRecord> getAllWater(const std::string& token) const;
 
@@ -59,7 +70,7 @@ public:
     bool isWaterEnough(const std::string& token,
                        double dailyGoalMl) const;
 
-    // 睡眠紀錄
+    // ===== 睡眠紀錄 =====
     bool addSleep(const std::string& token,
                   const std::string& date,
                   double hours);
@@ -69,7 +80,8 @@ public:
                      const std::string& newDate,
                      double newHours);
 
-    bool deleteSleep(const std::string& token, std::size_t index);
+    bool deleteSleep(const std::string& token,
+                     std::size_t index);
 
     std::vector<SleepRecord> getAllSleep(const std::string& token) const;
 
@@ -78,7 +90,7 @@ public:
     bool isSleepEnough(const std::string& token,
                        double minHours) const;
 
-    // 活動紀錄
+    // ===== 活動紀錄 =====
     bool addActivity(const std::string& token,
                      const std::string& date,
                      int minutes,
@@ -90,18 +102,26 @@ public:
                         int newMinutes,
                         const std::string& newIntensity);
 
-    bool deleteActivity(const std::string& token, std::size_t index);
+    bool deleteActivity(const std::string& token,
+                        std::size_t index);
 
     std::vector<ActivityRecord> getAllActivity(const std::string& token) const;
 
     void sortActivityByDuration(const std::string& token);
 
-    // 其他分類
+    // ===== 其他分類 =====
     bool addOtherRecord(const std::string& token,
                         const std::string& categoryName,
                         const std::string& date,
                         double value,
                         const std::string& note);
+
+    bool updateOtherRecord(const std::string& token,
+                           const std::string& categoryName,
+                           std::size_t index,
+                           const std::string& newDate,
+                           double newValue,
+                           const std::string& newNote);
 
     bool deleteOtherRecord(const std::string& token,
                            const std::string& categoryName,

@@ -5,9 +5,11 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../external/json.hpp"   // 使用 nlohmann::json
+
 struct SleepRecord {
-    std::string date;  // "YYYY-MM-DD"
-    double hours;
+    std::string date; // "YYYY-MM-DD"
+    double hours;     // 睡眠小時數
 };
 
 class SleepManager {
@@ -24,7 +26,8 @@ public:
                       const std::string& newDate,
                       double newHours);
 
-    bool deleteRecord(const std::string& userName, std::size_t index);
+    bool deleteRecord(const std::string& userName,
+                      std::size_t index);
 
     std::vector<SleepRecord> getAll(const std::string& userName) const;
 
@@ -32,6 +35,10 @@ public:
 
     bool isSleepEnough(const std::string& userName,
                        double minHours) const;
+
+    // JSON 匯出 / 匯入
+    nlohmann::json toJson() const;
+    void fromJson(const nlohmann::json& j);
 };
 
 #endif

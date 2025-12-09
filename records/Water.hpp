@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../external/json.hpp"   // 使用 nlohmann::json
+
 struct WaterRecord {
     std::string date;   // "YYYY-MM-DD"
     double amountMl;    // 當天飲水量
@@ -33,6 +35,10 @@ public:
 
     bool isEnoughForWeek(const std::string& userName,
                          double dailyGoalMl) const;
+
+    // JSON 匯出 / 匯入
+    nlohmann::json toJson() const;
+    void fromJson(const nlohmann::json& j);
 };
 
 #endif

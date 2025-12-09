@@ -1,0 +1,44 @@
+{
+    "users": {
+        "exampleUser": {
+            "name": "exampleUser",
+            "age": 20,
+            "weightKg": 50.0,
+            "heightM": 1.60,
+            "password": "hashed_or_plain_example"
+        }
+    },
+
+    "tokens": {
+        "exampleToken123": "exampleUser"
+    },
+
+    "water": {
+        "exampleUser": [
+            { "date": "2025-01-01", "amountMl": 1500 },
+            { "date": "2025-01-02", "amountMl": 1800 }
+        ]
+    },
+
+    "sleep": {
+        "exampleUser": [
+            { "date": "2025-01-01", "hours": 7.0 },
+            { "date": "2025-01-02", "hours": 6.5 }
+        ]
+    },
+
+    "activity": {
+        "exampleUser": [
+            { "date": "2025-01-01", "minutes": 60, "intensity": "moderate" },
+            { "date": "2025-01-02", "minutes": 30, "intensity": "vigorous" }
+        ]
+    },
+
+    "other": {
+        "exampleUser": {
+            "Mood": [
+                { "date": "2025-01-01", "value": 3, "note": "Good day" }
+            ]
+        }
+    }
+}

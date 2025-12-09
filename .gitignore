@@ -1,19 +1,48 @@
-# ===== C++ build outputs =====
-*.o
+# ================================
+# Build outputs / binaries
+# ================================
+server_app
 *.out
 *.exe
-*.dylib
+*.o
+*.obj
 
-# Executable files (your compiled backend/server binaries)
-server_app
-backend_app
-main
+# VSCode temp runner
+tempCodeRunnerFile.*
 
-# ===== macOS system files =====
+# ================================
+# OS / Editor temporary files
+# ================================
 .DS_Store
-
-# ===== VSCode settings =====
+Thumbs.db
 .vscode/
+*.swp
+*.swo
 
-# ===== Debugger folders =====
-*.dSYM/
+# ================================
+# CMake / build folders (如果未來用 CMake)
+# ================================
+/build/
+/cmake-build*/
+
+# ================================
+# JSON data storage (runtime generated)
+# ================================
+data/storage.json
+
+# If you want to ignore temp backup files
+*.bak
+*.tmp
+
+# ================================
+# Logs
+# ================================
+*.log
+logs/
+
+# ================================
+# Ignore compiled libraries
+# ================================
+*.a
+*.so
+*.dll

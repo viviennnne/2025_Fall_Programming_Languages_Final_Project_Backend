@@ -2,14 +2,21 @@
 #define USER_BACKEND_HPP
 
 #include <string>
+#include <map>
 #include <unordered_map>
+#include "../external/json.hpp"
 #include "User.hpp"
 
+// 負責管理所有 User + token
 class UserBackend {
 private:
-    std::unordered_map<std::string, User> usersByName;
-    std::unordered_map<std::string, std::string> tokenToUserName;
+    // 用 name 當 key 存 User
+    std::map<std::string, User> users;
 
+    // token -> name
+    std::unordered_map<std::string, std::string> tokenToName;
+
+    // 產生隨機 token
     std::string generateToken() const;
 
 public:
@@ -30,11 +37,17 @@ public:
                     double newHeightM,
                     const std::string& newPassword);
 
-    bool verifyToken(const std::string& token) const;
+    bool deleteUser(const std::string& name);
 
+    // 用 token 算 BMI（給 HealthBackend 用）
+    double getUserBMI(const std::string& token) const;
+
+    // 從 token 找 name（HealthBackend 裡用來找 user）
     std::string getUserNameByToken(const std::string& token) const;
 
-    double getUserBMI(const std::string& token) const;
+    // 存到 JSON / 從 JSON 載入
+    nlohmann::json toJson() const;
+    void fromJson(const nlohmann::json& j);
 };
 
-#endif
+#endif // USER_BACKEND_HPP
