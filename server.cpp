@@ -216,6 +216,7 @@ int main() {
             out["token"] = token;
             res.status = 201;
             res.set_content(out.dump(), "application/json");
+            util::Logger::info(std::string("POST /register: user=") + name + " token=" + token);
         } catch (const std::exception &e) {
             json err;
             err["errorMessage"] = std::string("Invalid JSON: ") + e.what();
@@ -248,6 +249,7 @@ int main() {
                 err["errorMessage"] = "Invalid name or password";
                 res.status = 401;
                 res.set_content(err.dump(), "application/json");
+                util::Logger::warn(std::string("POST /login failed: user=") + name);
                 return;
             }
 
@@ -255,6 +257,7 @@ int main() {
             out["token"] = token;
             res.status = 200;
             res.set_content(out.dump(), "application/json");
+            util::Logger::info(std::string("POST /login: user=") + name + " token=" + token);
         } catch (const std::exception &e) {
             json err;
             err["errorMessage"] = std::string("Invalid JSON: ") + e.what();
@@ -551,6 +554,7 @@ int main() {
                 err["errorMessage"] = "Failed to add sleep record";
                 res.status = 400;
                 res.set_content(err.dump(), "application/json");
+                util::Logger::warn(std::string("POST /sleeps failed: token=") + token + " hours=" + std::to_string(hours));
                 return;
             }
 
@@ -1065,7 +1069,7 @@ int main() {
             const auto &r   = records[idx];
 
             json out;
-            out["id"]         = std::to_string(idx);
+            out["id"]         = makeCategoryItemId(idx);
             out["categoryId"] = categoryId;
             out["datetime"]   = r.datetime;
             out["note"]       = r.note;
@@ -1080,7 +1084,7 @@ int main() {
     });
 
     // PATCH /category/{categoryId}/{itemId}
-    svr.Patch(R"(/category/([^/]+)/(\d+))", [&backend](const httplib::Request &req, httplib::Response &res) {
+    svr.Patch(R"(/category/([^/]+)/([^/]+))", [&backend](const httplib::Request &req, httplib::Response &res) {
         std::string token = getTokenFromAuthHeader(req);
         if (token.empty()) {
             json err;
@@ -1092,11 +1096,8 @@ int main() {
 
         std::string categoryId = req.matches[1];
         std::string itemIdStr  = req.matches[2];
-
         std::size_t index = 0;
-        try {
-            index = static_cast<std::size_t>(std::stoul(itemIdStr));
-        } catch (...) {
+        if (!parseCategoryItemId(itemIdStr, index)) {
             json err;
             err["errorMessage"] = "Invalid item id";
             res.status = 400;
@@ -1137,7 +1138,7 @@ int main() {
             }
 
             json out;
-            out["id"]         = itemIdStr;
+            out["id"]         = makeCategoryItemId(index);
             out["categoryId"] = categoryId;
             out["datetime"]   = newDatetime;
             out["note"]       = newNote;
@@ -1152,7 +1153,7 @@ int main() {
     });
 
     // DELETE /category/{categoryId}/{itemId}
-    svr.Delete(R"(/category/([^/]+)/(\d+))", [&backend](const httplib::Request &req, httplib::Response &res) {
+    svr.Delete(R"(/category/([^/]+)/([^/]+))", [&backend](const httplib::Request &req, httplib::Response &res) {
         std::string token = getTokenFromAuthHeader(req);
         if (token.empty()) {
             json err;
@@ -1164,11 +1165,8 @@ int main() {
 
         std::string categoryId = req.matches[1];
         std::string itemIdStr  = req.matches[2];
-
         std::size_t index = 0;
-        try {
-            index = static_cast<std::size_t>(std::stoul(itemIdStr));
-        } catch (...) {
+        if (!parseCategoryItemId(itemIdStr, index)) {
             json err;
             err["errorMessage"] = "Invalid item id";
             res.status = 400;
