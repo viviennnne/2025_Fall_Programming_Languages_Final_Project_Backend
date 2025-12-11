@@ -26,6 +26,30 @@ int main() {
     HealthBackend backend;
     httplib::Server svr;
 
+    // CORS: respond to preflight and add headers to every response
+    svr.Options(R"(.*)", [](const httplib::Request &req, httplib::Response &res) {
+        // Allow requests from any origin (adjust if you want to restrict)
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+        res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        res.set_header("Access-Control-Max-Age", "3600");
+        res.status = 204; // No Content for preflight
+    });
+
+    // Inject CORS headers to all responses via a post-routing hook
+    svr.set_post_routing_handler([&](const httplib::Request & /*req*/, httplib::Response &res) {
+        // Only add header if it's not already present
+        if (res.get_header_value("Access-Control-Allow-Origin").empty()) {
+            res.set_header("Access-Control-Allow-Origin", "*");
+        }
+        if (res.get_header_value("Access-Control-Allow-Headers").empty()) {
+            res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        }
+        if (res.get_header_value("Access-Control-Allow-Methods").empty()) {
+            res.set_header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+        }
+    });
+
     // =======================
     //      Health Check
     // =======================

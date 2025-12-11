@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <map>
 
-#include "/Users/zhouxinhui/Desktop/health_backend/external/json.hpp"
+#include "../external/json.hpp"
 
 // 使用 nlohmann::json
 using json = nlohmann::ordered_json;

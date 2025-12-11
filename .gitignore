@@ -57,3 +57,5 @@ data/*
 
 # Keep your source JSON config if needed:
 !config.json
+
+server_app
