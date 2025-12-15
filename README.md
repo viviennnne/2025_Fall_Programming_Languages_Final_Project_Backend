@@ -15,9 +15,11 @@ g++ -std=c++17 \
     -o server_app
 ./server_app
 ```
+
+Expected output:
 ```txt
-Expected output: Server started at http://0.0.0.0:8080
-```
+ Server started at http://0.0.0.0:8080
+ ```
 
 ## Frontend
 - [2025_Fall_Programming_Languages_Final_Project_Frontend](https://github.com/CoinVeil4065852/2025_Fall_Programming_Languages_Final_Project_Frontend.git) is the official backend for this project. Go to the page to see more.
