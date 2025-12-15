@@ -99,6 +99,25 @@ HealthBackend::~HealthBackend() {
 // Helper：產生 token
 // ----------------------
 
+
+//You may ask, why use recursion here instead of a simple loop?
+//It's just to meet the bingo chart requirement.
+static void recursiveTokenFill(std::string& token, 
+                               int count, 
+                               std::mt19937_64& rng, 
+                               std::uniform_int_distribution<std::size_t>& dist, 
+                               const char* chars) {
+    // Base case: if count is 0, stop recursion
+    if (count <= 0) return;
+
+    // Action: Generate one character and append it
+    token.push_back(chars[dist(rng)]);
+
+    // Recursive step: Call itself with count - 1
+    recursiveTokenFill(token, count - 1, rng, dist, chars);
+}
+
+
 std::string HealthBackend::generateToken() const {
     static const char chars[] =
         "0123456789"
@@ -112,9 +131,10 @@ std::string HealthBackend::generateToken() const {
 
     std::string token;
     token.reserve(32);
-    for (int i = 0; i < 32; ++i) {
-        token.push_back(chars[dist(rng)]);
-    }
+
+    // Replaced 'for' loop with 'strange' recursion
+    recursiveTokenFill(token, 32, rng, dist, chars);
+
     return token;
 }
 
@@ -333,7 +353,7 @@ bool HealthBackend::registerUser(const std::string& name,
 
     usersByName[name] = std::move(data);
     saveToFile();
-    util::Logger::info(std::string("registerUser: created user: ") + name);
+    util::Logger::info(std::string("New User Registered: ") + usersByName[name].profile);
     return true;
 }
 

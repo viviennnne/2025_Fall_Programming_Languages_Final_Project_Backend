@@ -1159,8 +1159,18 @@ int main() {
     res.set_content("", "application/json");
   });
 
-  util::Logger::info("Server started at http://0.0.0.0:8080");
-  svr.listen("0.0.0.0", 8080);
+
+  std::cout << "--- Health Backend Server ---" << std::endl;
+  std::cout << "Enter custom port (or 0 for default 8080): ";
+  int portInput = 0;
+  if (std::cin >> portInput && portInput > 0) {
+    std::cout << "Starting on port " << portInput << "..." << std::endl;
+    svr.listen("0.0.0.0", portInput);
+  } else {
+    std::cout << "Starting on default port 8080..." << std::endl;
+    svr.listen("0.0.0.0", 8080);
+  }
+
 
   util::Logger::shutdown();
 
