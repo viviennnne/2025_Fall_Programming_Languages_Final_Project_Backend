@@ -1,5 +1,4 @@
 // server.cpp
-// ===== CHANGED: 加上 CORS、修好 Category 建立/新增/刪除流程 =====
 
 #include <chrono>
 #include <cstdlib>
@@ -13,8 +12,6 @@
 #include "external/json.hpp"
 #include "helpers/Logger.hpp"
 #include "httplib.h"
-
-using json = nlohmann::ordered_json;
 
 using json = nlohmann::ordered_json;
 
