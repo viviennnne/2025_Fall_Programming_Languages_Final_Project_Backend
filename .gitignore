@@ -50,7 +50,6 @@ run
 data/*
 !data/.gitkeep
 
-# >>> ⭐ 新增：保留示例 JSON
 !data/storage.example.json   
 
 # ==========================
