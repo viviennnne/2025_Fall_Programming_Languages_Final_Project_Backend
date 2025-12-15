@@ -367,10 +367,15 @@ bool HealthBackend::getUserProfile(const std::string& token,
 double HealthBackend::getBMI(const std::string& token) const {
     const UserData* user = getUserByToken(token);
     if (!user) return 0.0;
-    if (user->profile.heightM <= 0.0) return 0.0;
-    if (user->profile.weightKg <= 0.0) return 0.0;
 
-    return user->profile.weightKg / (user->profile.heightM * user->profile.heightM);
+    double height = user->profile.heightM;
+    double weight = user->profile.weightKg;
+    // Height: 0.5 m ~ 2.5 m
+    // Weight: 1 kg ~ 300 kg
+    if (height < 0.5 || height > 2.5) return 0.0;
+    if (weight < 1.0 || weight > 300.0) return 0.0;
+
+    return weight / (height * height);
 }
 
 // ----------------------
@@ -380,7 +385,7 @@ double HealthBackend::getBMI(const std::string& token) const {
 bool HealthBackend::addWater(const std::string& token,
                              const std::string& datetime,
                              double             amountMl) {
-    if (amountMl <= 0.0) return false;
+    if (amountMl <= 0.0 ||amountMl >=5000.0 ) return false;
     UserData* user = getUserByToken(token);
     if (!user) return false;
 
@@ -402,7 +407,7 @@ bool HealthBackend::updateWater(const std::string& token,
                                 std::size_t       index,
                                 const std::string& newDatetime,
                                 double             newAmountMl) {
-    if (newAmountMl <= 0.0) return false;
+    if (newAmountMl <= 0.0 ||newAmountMl >=5000.0) return false;
     UserData* user = getUserByToken(token);
     if (!user) return false;
     if (index >= user->waters.size()) return false;
@@ -431,7 +436,7 @@ bool HealthBackend::deleteWater(const std::string& token,
 bool HealthBackend::addSleep(const std::string& token,
                              const std::string& datetime,
                              double             hours) {
-    if (hours < 0.0) {
+    if (hours < 0.0 || hours > 24.0) {
         util::Logger::warn(std::string("addSleep: invalid hours: ") + std::to_string(hours));
         return false;
     }
@@ -457,7 +462,7 @@ bool HealthBackend::updateSleep(const std::string& token,
                                 std::size_t       index,
                                 const std::string& newDatetime,
                                 double             newHours) {
-    if (newHours < 0.0) return false;
+    if (newHours < 0.0 || newHours >24.0) return false;
     UserData* user = getUserByToken(token);
     if (!user) return false;
     if (index >= user->sleeps.size()) return false;
@@ -487,7 +492,7 @@ bool HealthBackend::addActivity(const std::string& token,
                                 const std::string& datetime,
                                 int                minutes,
                                 const std::string& intensity) {
-    if (minutes <= 0) return false;
+    if (minutes <= 0 || minutes > 1440.0) return false;
     UserData* user = getUserByToken(token);
     if (!user) return false;
 
@@ -511,7 +516,7 @@ bool HealthBackend::updateActivity(const std::string& token,
                                    const std::string& newDatetime,
                                    int                newMinutes,
                                    const std::string& newIntensity) {
-    if (newMinutes <= 0) return false;
+    if (newMinutes <= 0 || newMinutes > 1440.0) return false;
     UserData* user = getUserByToken(token);
     if (!user) return false;
     if (index >= user->activities.size()) return false;
@@ -564,7 +569,6 @@ bool HealthBackend::createCategory(const std::string& token,
     return true;
 }
 
-// ⚠️ 不再自動建立 category
 bool HealthBackend::addOtherRecord(const std::string& token,
                                    const std::string& categoryName,
                                    const std::string& datetime,
