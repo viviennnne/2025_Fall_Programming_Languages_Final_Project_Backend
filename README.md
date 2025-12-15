@@ -7,58 +7,79 @@
 - The backend is designed to work with a front-end dashboard and stores data locally using JSON files.
 
 ## Build
-- g++ -std=c++17 server.cpp backend/HealthBackend.cpp -o server_app
-- ./server_app
-- Expected output: Server started at http://0.0.0.0:8080
+ ```txt
+g++ -std=c++17 \
+    server.cpp \
+    backend/HealthBackend.cpp \
+    helpers/Logger.cpp \
+    -o server_app
+./server_app
+```
+```txt
+Expected output: Server started at http://0.0.0.0:8080
+```
 
 ## Frontend
-### Server
 - [2025_Fall_Programming_Languages_Final_Project_Frontend](https://github.com/CoinVeil4065852/2025_Fall_Programming_Languages_Final_Project_Frontend.git) is the official backend for this project. Go to the page to see more.
 
-## Folder Structure
-
-```
-health_backend/
-├── main.cpp                    # Core backend testing (no HTTP)
-├── server.cpp                  # HTTP server entry point (REST API)
-├── httplib.h                   # cpp-httplib (header-only HTTP library)
-│
-├── external/
-│   └── json.hpp                 # nlohmann JSON header-only library
-│
-├── backend/
-│   ├── HealthBackend.hpp
-│   └── HealthBackend.cpp
-│
-├── user/
-│   ├── User.hpp
-│   ├── User.cpp
-│   ├── UserBackend.hpp
-│   └── UserBackend.cpp
-│
-├── records/
-│   ├── Water.hpp
-│   ├── Water.cpp
-│   ├── Sleep.hpp
-│   ├── Sleep.cpp
-│   ├── Activity.hpp
-│   ├── Activity.cpp
-│   ├── OtherCategory.hpp
-│   └── OtherCategory.cpp
-│
-├── helpers/
-│   ├── validation.hpp
-│   ├── validation.cpp
-│   └── json.hpp                 # (replaced by nlohmann/json)
-│
-└── data/
-    ├── storage.json             # Auto-generated persistent storage
-    └── storage.example.json     # Example layout (no real data)
+### Data Storage 
+- All data is stored in a JSON file:
+```txt
+data/storage.json
 ```
 
----
+## API Endpoints Overview
+### Authentication and User
+| Method | Endpoint | Description |
+|-------|---------|-------------|
+| POST | /register | Register a new user |
+| POST | /login | Login and get authentication token |
+| GET | /user/profile | Get user profile information |
+### Water Records
+| Method | Endpoint | Description |
+|-------|---------|-------------|
+| GET | /user/bmi | Calculate and get BMI |
+| GET | /waters | Get all water intake records |
+| POST | /waters | Add a water intake record |
+| PATCH | /waters/{id} | Update a water intake record |
+| DELETE | /waters/{id} | Delete a water intake record |
+### Sleep Records
+| Method | Endpoint | Description |
+|-------|---------|-------------|
+| GET | /sleeps | Get all sleep records |
+| POST | /sleeps | Add a sleep record |
+| PATCH | /sleeps/{id} | Update a sleep record |
+| DELETE | /sleeps/{id} | Delete a sleep record |
+### Activity Records
+| Method | Endpoint | Description |
+|-------|---------|-------------|
+| GET | /activities | Get all activity records |
+| POST | /activities | Add an activity record |
+| PATCH | /activities/{id} | Update an activity record |
+| DELETE | /activities/{id} | Delete an activity record |
+### Custom Categories
+| Method | Endpoint | Description |
+|-------|---------|-------------|
+| GET | /category/list | List all custom categories |
+| POST | /category/create | Create a new custom category |
+| DELETE | /category/{categoryId} | Delete a category |
+| GET | /category/{categoryId}/list | Get items in a category |
+| POST | /category/{categoryId}/add | Add item to category |
+| PATCH | /category/{categoryId}/{itemId} | Update category item |
+| DELETE | /category/{categoryId}/{itemId} | Delete category item |
 
-- `main.cpp` is for backend logic testing (no HTTP).
-- `server.cpp` is the REST API entry point.
-- Data is persisted to `data/storage.json`.
-- JSON parsing is implemented with `nlohmann/json` (header-only).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
